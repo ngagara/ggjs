@@ -1,8 +1,9 @@
 import React from 'react'
-import './App.css'
 import { Button, Container } from '@material-ui/core'
+import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { questions } from './data'
+import { questions } from '../../data'
+import { addScoreAction, changeQuestion } from './../../store/quizReducer';
 
 const useStyles = makeStyles({
   root: {
@@ -11,21 +12,20 @@ const useStyles = makeStyles({
   }
 });
 
-function App() {
+function Quiz() {
 
-  const [currentQuestion, setCurrentQuestion] = React.useState(0);
-  const [userAnswers, setUserAnswers] = React.useState([]);
-  const [score, setScore] = React.useState(0);
-
+  const dispatch = useDispatch();
   const classes = useStyles();
+  const currentQuestion = useSelector(state => state.quiz.currentQuestion);
+  const score = useSelector(state => state.quiz.score);
 
   const currentQuizDate = questions[currentQuestion];
   
   const handleClickAnswer = (answer, correctAnswer) => {
-    setCurrentQuestion(prev => ++prev)
+    dispatch(changeQuestion(1))
     if (answer === correctAnswer) {
-      setScore(prev => ++prev)
-      setUserAnswers(prev => [...prev, answer])
+        dispatch(addScoreAction(1))
+    //   setUserAnswers(prev => [...prev, answer])
     }
   }
 
@@ -41,10 +41,10 @@ function App() {
           size='large'>{value}</Button>
          ))
        }
-      <h3>{currentQuestion+1} / {questions.length}</h3>
+      <h3>{ currentQuestion+1 } / { questions.length }</h3>
       <h3>Правильных ответов {score}</h3>
     </Container>
   );
 }
 
-export default App;
+export default Quiz;
